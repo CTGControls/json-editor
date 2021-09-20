@@ -238,19 +238,12 @@ export class SelectBitEditor extends AbstractEditor {
       this.theme.removeInputError(this.input || this.inputs)
     }
   }
-}
 
+  getBit = function (int16, bit) {  
+    return ((int16>>bit) % 2 != 0)
+  }
+  setBit = function (int16, bit) {
+    return int16 | 1<<bit;
+  }
 
-Uint8Array.prototype.getBit=function(b) {
-  var _t=this.getBitSum();
-  return ((_t & Math.pow(2,b)) != false);
-}
-
-Uint8Array.prototype.setBit=function(b, v) {
-  var _v=v;
-  if (isNaN(_v)) return false;
-  var _B=Math.floor(b/8), _B_b=(b%8);
-  if (_v) this[_B]|=Math.pow(2,_B_b);
-  else this[_B]&=(255-Math.pow(2,_B_b));
-  return true;
 }

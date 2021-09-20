@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <script src="../../dist/jsoneditor.js"></script>
+</head>
+<body>
+
+<textarea class="debug" cols="30" rows="10"></textarea>
+<button class='get-value'>Get Value</button>
+<div class='container'></div>
+
+<script>
+  var container = document.querySelector('.container');
+  var debug = document.querySelector('.debug');
+  var schema = 
+  {
+  "type": "array",
+  "format": "table",
+  "title": "MEVT_IN_0",
+  "uniqueItems": true,
+  "items": {
+    "type": "object",
+    "title": "step",
+    "properties": {
+      "GroupCarbonSP":{
+        "type": "object",
+        "title": "temperature setpoint",
+        "properties": {
+          "carbonSP": {
+            "type": "integer",
+            "format": "stepper",
+            "title": " ",
+            "default": "-301",
+            "minimum": -301,
+            "maximum": 2000,
+            "default": -301,
+            "options": {
+              "disable_collapse":true,
+              "disable_edit_json":true,
+              "disable_properties":true,
+              "dependencies": {
+                "disable":false
+              }
+            }
+          }
+          ,
+          "disable": {
+              "type":"boolean",
+              "format":"checkbox"
+        }
+      },
+      "options": {
+              "disable_collapse":true,
+              "disable_edit_json":true,
+              "disable_properties":true
+      }
+      },
+      "tempSP": {
+        "type": "array",
+        "format": "selectbit",
+        "uniqueItems": true,
+        "title": "Event Map",
+        "items": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+          ,
+        "options": {
+          "enum_titles":[
+            "Input 00",
+            "Input 01",
+            "Input 02",
+            "Input 03",
+            "Input 04",
+            "Input 05",
+            "Input 06",
+            "Input 07",
+            "Input 08",
+            "Input 09",
+            "Input 10",
+            "Input 11",
+            "Input 12",
+            "Input 13",
+            "Input 14",
+            "Input 15"
+          ] 
+        }
+        }
+      },      
+      "option": {
+        "type": "array",
+        "format": "checkbox",
+        "uniqueItems": true,
+        "title": "T/C Map",
+        "items": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+          ,
+        "options": {
+          "enum_titles":[
+            "Input 00",
+            "Input 01",
+            "Input 02",
+            "Input 03",
+            "Input 04",
+            "Input 05",
+            "Input 06",
+            "Input 07",
+            "Input 08",
+            "Input 09",
+            "Input 10",
+            "Input 11",
+            "Input 12",
+            "Input 13",
+            "Input 14",
+            "Input 15"
+          ] 
+        }
+        }
+      }
+    }
+  },
+  "default": [
+    {}
+  ],
+  "options": {
+    "disable_array_add": true,
+    "disable_array_delete": true,
+    "disable_array_delete_all_rows": true,
+    "disable_array_delete_last_row": true,
+    "disable_collapse": true
+  }
+}
+;
+
+  var editor = new JSONEditor(container, {
+    schema: schema
+  });
+
+  document.querySelector('.get-value').addEventListener('click', function () {
+    debug.value = JSON.stringify(editor.getValue());
+  });
+
+</script>
+
+</body>
+</html>

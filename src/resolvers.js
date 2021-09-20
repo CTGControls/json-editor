@@ -68,6 +68,7 @@ const arraysOfStrings = schema => {
       /* if 'selectize' enabled it is expected to be selectized control */
       if (schema.format === 'selectize') return 'arraySelectize'
       if (schema.format === 'select2') return 'arraySelect2'
+      if (schema.format === 'selectbit') return 'selectBit'
       if (schema.items.enum) return 'multiselect' /* otherwise it is select */
     }
   }
@@ -98,6 +99,15 @@ const stepper = schema => {
   }
 }
 
+/* Use the bit select editor for schemas with type `object` and format `bitselect` */
+const selectbit = schema => {
+  if ((schema.type === 'object') && schema.format === 'selectbit') {
+    window.alert('selectbit')
+    window.alert(schema.title)
+    return 'selectbit'
+  }
+}
+
 /* Enable custom editor type */
 const button = schema => schema.format === 'button' && 'button'
 
@@ -122,4 +132,4 @@ const ip = schema => schema.type === 'string' && ['ip', 'ipv4', 'ipv6', 'hostnam
 const colorPicker = schema => schema.type === 'string' && schema.format === 'color' && 'colorpicker'
 
 /* Export resolvers in order of discovery, first to last */
-export const resolvers = [colorPicker, ip, ace, xhtml, markdown, jodit, autoComplete, uuid, info, button, stepper, describeBy, starratings, date, oneOf, arraysOfStrings, enumeratedProperties, enumSource, table, upload, base64, any, boolean, signature, primitive, object, defaultResolver]
+export const resolvers = [colorPicker, ip, ace, xhtml, markdown, jodit, autoComplete, uuid, info, button, stepper, selectbit, describeBy, starratings, date, oneOf, arraysOfStrings, enumeratedProperties, enumSource, table, upload, base64, any, boolean, signature, primitive, object, defaultResolver]

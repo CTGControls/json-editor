@@ -4,17 +4,13 @@
   "description": "JSON Schema based editor",
   "version": "2.5.4",
   "main": "dist/jsoneditor.js",
-  "author": {
-    "name": "Jeremy Dorn",
-    "email": "jeremy@jeremydorn.com",
-    "url": "http://jeremydorn.com"
-  },
+  "author": "Jeremy Dorn <jeremy@jeremydorn.com> (http://jeremydorn.com)",
   "bugs": {
     "url": "https://github.com/json-editor/json-editor/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/json-editor/json-editor.git"
+    "url": "git+https://github.com/json-editor/json-editor.git"
   },
   "keywords": [
     "json",
@@ -30,7 +26,7 @@
     "build.prod": "webpack --config config/webpack.prod.js --progress --profile --bail",
     "build.nonmin": "webpack --config config/webpack.nonmin.js --progress --profile --bail",
     "build.nonmin.travis": "webpack --config config/webpack.nonmin.js --env.travis --progress --profile --bail",
-    "build.dev": "webpack --config config/webpack.dev.js --progress --profile --bail",
+    "build.dev": "webpack --config config/webpack.dev.js --progress --profile --bayil",
     "watch": "webpack --config config/webpack.nonmin.js --watch",
     "debug": "webpack-dev-server --config config/webpack.dev.js --progress",
     "debug.nonmin": "webpack-dev-server --config config/webpack.nonmin.js --progress",
@@ -57,6 +53,7 @@
     "@babel/plugin-transform-runtime": "^7.13.15",
     "@babel/preset-env": "^7.14.1",
     "@babel/runtime": "^7.14.0",
+    "@webpack-cli/serve": "^1.5.2",
     "ace-builds": "^1.4.12",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^3.0.0",
@@ -68,7 +65,7 @@
     "eslint": "^6.8.0",
     "eslint-loader": "^2.2.1",
     "fast-deep-equal": "^3.1.3",
-    "http-server": "^0.12.3",
+    "http-server": "^13.0.2",
     "jasmine": "^3.7.0",
     "jasmine-core": "^3.7.1",
     "jodit": "~3.3.24",
@@ -90,12 +87,17 @@
     "sinon": "^8.1.1",
     "standard": "^14.3.4",
     "style-loader": "^1.3.0",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^4.2.2"
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.2.1",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
     "core-js": "^3.12.1"
+  },
+  "homepage": "https://github.com/json-editor/json-editor#readme",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
   }
 }
