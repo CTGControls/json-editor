@@ -39,9 +39,6 @@ export class SelectBitEditor extends AbstractEditor {
     const t = itemsSchema.options ? itemsSchema.options.enum_titles || [] : []
 
     for (i = 0; i < e.length; i++) {
-      /* If the sanitized value is different from the enum value, don't include it */
-      if (this.sanitize(e[i]) !== e[i]) continue
-
       this.option_keys.push(`${e[i]}`)
       this.option_titles.push(`${t[i] || e[i]}`)
       this.select_values[`${e[i]}`] = e[i]
@@ -106,90 +103,38 @@ export class SelectBitEditor extends AbstractEditor {
   }
 
   setValue (value, initial) {
-    value = value || []
+    const newValue = []
 
-    console.log('setValue1')
-    console.log(value)
-    if (!(Array.isArray(value))) value = [value]
-
-    /* Make sure we are dealing with an array of strings so we can check for strict equality */
-    value = value.map(e => `${e}`)
+    const bufferView = Int16Array.from([value])
+    value = bufferView[0]
 
     /* Update selected status of options */
     Object.keys(this.select_options).forEach(i => {
-      this.select_options[i][this.input_type === 'select' ? 'selected' : 'checked'] = (value.includes(i))
+      if ((bufferView & (1 << i)) === 0 ? 0 : 1) {
+        this.select_options[i].checked = true
+        newValue.push(this.select_values[this.option_keys[i]])
+      } else {
+        this.select_options[i].checked = false
+      }
     })
-    console.log('setValue2')
-    console.log(value)
 
-    this.updateValue(value)
+    this.updateValue(newValue)
     this.onChange(true)
   }
 
-  removeValue (value) {
-    /* Remove from existing value(s) */
-    value = [].concat(value)
-    this.setValue(this.getValue().filter(item => !value.includes(item)))
-  }
-
-  addValue (value) {
-    /* Add to existing value(s) */
-    this.setValue(this.getValue().concat(value))
-  }
-
   updateValue (value) {
-    console.log('updateValue')
-    console.log(value)
     let changed = false
     let buffer = new ArrayBuffer(2)
-    buffer = -32768
-    console.log(buffer)
-    if (buffer.byteLength === 2) {
-      console.log("Yes, it's 2 bytes.")
-    } else {
-      console.log("Oh no, it's the wrong size!")
-    }
-    var buffer2 = []
-    buffer2 = Int16Array.from([-32768])
-    console.log(buffer2)
-    if (buffer2.byteLength === 2) {
-      console.log('Yes, buffer2 is 2 bytes.')
-    } else {
-      console.log("Oh no, buffer2 it's the wrong size!")
-    }
-    /* if (this.schema.format === 'selectbit') {
-      for (let i = 0; i < value.length; i++) {
-        if (!this.select_options[`${value[i]}`]) {
-          changed = true
-          continue
-        }
-        newValue
-        if (sanitized !== value[i]) changed = true
-      }
 
-    } else {
-
-    } */
-    const newValue = []
     for (let i = 0; i < value.length; i++) {
-      if (!this.select_options[`${value[i]}`]) {
-        changed = true
-        continue
-      }
-      const sanitized = this.sanitize(this.select_values[value[i]])
-      newValue.push(sanitized)
-      if (sanitized !== value[i]) changed = true
+      buffer = buffer | 1 << value[i]
+      changed = true
     }
-    this.value = newValue
 
+    var bufferView = Int16Array.from([buffer])
+
+    this.value = bufferView[0]
     return changed
-  }
-
-  sanitize (value) {
-    if (this.schema.items.type === 'boolean') return !!value
-    else if (this.schema.items.type === 'number') return 1 * value || 0
-    else if (this.schema.items.type === 'integer') return Math.floor(value * 1 || 0)
-    return `${value}`
   }
 
   enable () {
@@ -238,12 +183,4 @@ export class SelectBitEditor extends AbstractEditor {
       this.theme.removeInputError(this.input || this.inputs)
     }
   }
-
-  getBit = function (int16, bit) {  
-    return ((int16>>bit) % 2 != 0)
-  }
-  setBit = function (int16, bit) {
-    return int16 | 1<<bit;
-  }
-
 }

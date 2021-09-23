@@ -2,12 +2,14 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <script src="../../dist/jsoneditor.js"></script>
+  <script src="../../dist/nonmin/jsoneditor.js"></script>
 </head>
 <body>
 
 <textarea class="debug" cols="30" rows="10"></textarea>
 <button class='get-value'>Get Value</button>
+<button class='set-value01'>Set Value 1200</button>
+<button class='set-value02'>Set Value -32768</button>
 <div class='container'></div>
 
 <script>
@@ -57,9 +59,11 @@
       }
       },
       "tempSP": {
-        "type": "array",
+        "type": "integer",
         "format": "selectbit",
-        "uniqueItems": true,
+        "minimum": -32768,
+        "maximum": 32767,
+        "default": 0,
         "title": "Event Map",
         "items": {
           "type": "integer",
@@ -127,7 +131,7 @@
             12,
             13,
             14,
-            15
+            16
           ]
           ,
         "options": {
@@ -175,6 +179,16 @@
     debug.value = JSON.stringify(editor.getValue());
   });
 
+
+  document.querySelector('.set-value01').addEventListener('click', function () {
+    editor.setValue([{"GroupCarbonSP":{"carbonSP":600,"disable":false},"tempSP":1200,"option":[0,2,4,6]}]);
+  });
+
+  document.querySelector('.set-value02').addEventListener('click', function () {
+    editor.setValue([{"GroupCarbonSP":{"carbonSP":600,"disable":false},"tempSP":-32768,"option":[1,3,5,7]}]);
+  });
+
+  
 </script>
 
 </body>

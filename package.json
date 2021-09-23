@@ -26,7 +26,7 @@
     "build.prod": "webpack --config config/webpack.prod.js --progress --profile --bail",
     "build.nonmin": "webpack --config config/webpack.nonmin.js --progress --profile --bail",
     "build.nonmin.travis": "webpack --config config/webpack.nonmin.js --env.travis --progress --profile --bail",
-    "build.dev": "webpack --config config/webpack.dev.js --progress --profile --bayil",
+    "build.dev": "webpack --config config/webpack.dev.js --progress --profile --bail",
     "watch": "webpack --config config/webpack.nonmin.js --watch",
     "debug": "webpack-dev-server --config config/webpack.dev.js --progress",
     "debug.nonmin": "webpack-dev-server --config config/webpack.nonmin.js --progress",
