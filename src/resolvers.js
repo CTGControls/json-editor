@@ -68,7 +68,6 @@ const arraysOfStrings = schema => {
       /* if 'selectize' enabled it is expected to be selectized control */
       if (schema.format === 'selectize') return 'arraySelectize'
       if (schema.format === 'select2') return 'arraySelect2'
-      if (schema.format === 'selectbit') return 'selectBit'
       if (schema.items.enum) return 'multiselect' /* otherwise it is select */
     }
   }
@@ -101,10 +100,8 @@ const stepper = schema => {
 
 /* Use the bit select editor for schemas with type `object` and format `bitselect` */
 const selectbit = schema => {
-  if ((schema.type === 'object') && schema.format === 'selectbit') {
-    window.alert('selectbit')
-    window.alert(schema.title)
-    return 'selectbit'
+  if ((schema.type === 'integer') && schema.format === 'selectbit') {
+    return 'selectBit'
   }
 }
 
