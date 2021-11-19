@@ -1,5 +1,21 @@
 ### Unreleased
 
+### 2.6.1
+
+- Fix for #900 to close the properties modal when we click outside modal
+- fix: Rework use of event.path to prevent a ReferenceError in Safari
+- Fix for dependencies when dependency is an array
+
+### 2.6.0
+
+- set show_opt_in per object editor
+- stepper manual set init fix
+- don't validate dependant editors when not visible (dependency not fulfilled)
+- hardened tests
+- bootstra3 tabs fix
+- removed datetime from metaschema and readmy (deprecated)
+- not forced required for radios
+- audit fixes
 - pass additional pathDepth parameter to getHeader() to allow themes to render headings hierarchically
 - add Open Iconic iconlib
 - switched CI to Github Actions

@@ -176,6 +176,38 @@ Scenario('set value opt in optional properties @show_opt_in', async (I) => {
   I.waitForElement('[data-schemapath="root.object.radio"]', 5)
 })
 
+Scenario('set value opt in optional properties @show_opt_in_schema', async (I) => {
+  I.amOnPage('object-show-opt-in.html')
+
+  // all editors visible
+  I.waitForElement('[data-schemapath="root"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_undefined"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_undefined.string"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_true"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_true.string"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_false"]', 5)
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_false.string"]', 5)
+
+  // checkboxes for optional properties should appear only when
+  // case 1) the parent option show_opt_in is enabled
+  // OR
+  // case 2) the parent option show_opt_in is disabled and the global option show_opt_in is enabled
+  // OR
+  // case 3) the parent option show_opt_in is not defined and the global option show_opt_in is enabled
+
+  // global show_opt_in true
+  I.dontSeeCheckedAttribute('#show-opt-in')
+  I.dontSeeElement('[data-schemapath="root.option_show_opt_in_undefined.string"] .json-editor-opt-in') // global show_opt_in: false && parent editor show_opt_in: 'undefined'
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_true.string"] .json-editor-opt-in', 5) // global show_opt_in: false && parent editor show_opt_in: true
+  I.dontSeeElement('[data-schemapath="root.option_show_opt_in_false.string"] .json-editor-opt-in') // global show_opt_in: false && parent editor show_opt_in: false
+
+  // global show_opt_in false
+  I.click('#show-opt-in')
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_undefined.string"] .json-editor-opt-in') // global show_opt_in: true && parent editor show_opt_in: 'undefined'
+  I.waitForElement('[data-schemapath="root.option_show_opt_in_true.string"] .json-editor-opt-in', 5) // global show_opt_in: true && parent editor show_opt_in: true
+  I.dontSeeElement('[data-schemapath="root.option_show_opt_in_false.string"] .json-editor-opt-in') // global show_opt_in: true && parent editor show_opt_in: false
+})
+
 Scenario('objects should contain properties defined with the properties keyword unless the property "additionalProperties: true" is specified in the object schema @additional-properties', async (I) => {
   I.amOnPage('object-no-additional-properties.html')
   I.seeElement('[data-schemapath="root.aptrue.name"] input')
@@ -199,7 +231,7 @@ Scenario('should have unique ids', (I) => {
   I.waitForText('i am actually a cat')
 })
 
-Scenario('should hide properties with unfulfilled dependencies', (I) => {
+Scenario('should hide properties with unfulfilled dependencies @dependencies', (I) => {
   I.amOnPage('object-with-dependencies.html')
   I.seeElement('[data-schemapath="root.enable_option"] input')
   I.dontSeeElement('[data-schemapath="root.make_new"] input')
@@ -211,13 +243,33 @@ Scenario('should hide properties with unfulfilled dependencies', (I) => {
   I.dontSeeElement('[data-schemapath="root.existing_name"] input')
 })
 
-Scenario('should respect multiple dependency values', (I) => {
+Scenario('should respect multiple dependency values @dependencies', (I) => {
   I.amOnPage('object-with-dependencies-array.html')
-  I.waitForVisible('[data-schemapath="root.answerB"] input', 5)
-  I.selectOption('[name="root[answerA]"]', 'C')
-  I.waitForInvisible('[data-schemapath="root.answerB"] input', 5)
-  I.selectOption('[name="root[answerA]"]', 'B')
-  I.waitForVisible('[data-schemapath="root.answerB"] input', 5)
-  I.selectOption('[name="root[answerA]"]', 'A')
-  I.waitForVisible('[data-schemapath="root.answerB"] input', 5)
+  I.waitForVisible('[data-schemapath="root.question_1"] select', 5)
+  I.selectOption('[name="root[question_1]"]', 'a')
+  I.waitForInvisible('[data-schemapath="root.question_1_feedback"]', 5)
+  I.selectOption('[name="root[question_1]"]', 'b')
+  I.waitForVisible('[data-schemapath="root.question_1_feedback"]', 5)
+  I.selectOption('[name="root[question_1]"]', 'c')
+  I.waitForInvisible('[data-schemapath="root.question_1_feedback"]', 5)
+  I.selectOption('[name="root[question_1]"]', 'd')
+  I.waitForVisible('[data-schemapath="root.question_1_feedback"]', 5)
+
+  I.waitForVisible('[data-schemapath="root.question_2"]', 5)
+  I.waitForInvisible('[data-schemapath="root.question_2_feedback"]', 5)
+  I.click('label[for="root[question_2]1"]')
+  I.click('label[for="root[question_2]2"]')
+  I.waitForVisible('[data-schemapath="root.question_2_feedback"]', 5)
+  I.click('label[for="root[question_2]0"]')
+  I.click('label[for="root[question_2]3"]')
+  I.waitForInvisible('[data-schemapath="root.question_2_feedback"]', 5)
+})
+
+Scenario('should open and close the properties modal', (I) => {
+  I.amOnPage('object.html')
+  I.seeElement('.json-editor-btn-edit_properties')
+  I.click('.json-editor-btn-edit_properties')
+  I.seeElement('.je-modal .property-selector')
+  I.click('textarea')
+  I.dontSeeElement('.je-modal .property-selector')
 })
