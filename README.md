@@ -752,6 +752,33 @@ __SimpleMDE__ is a simple Markdown editor with live preview.  To use it, set the
 }
 ```
 
+To customize the editor, add the [configuration](https://github.com/sparksuite/simplemde-markdown-editor#configuration) in the `simplemde` option:
+
+```json
+{
+  "type": "string",
+  "format": "markdown",
+  "options": {
+    "simplemde": {
+      "toolbar": [
+        "bold",
+        "italic",
+        "heading",
+        "|",
+        "link",
+        "quote",
+        "|",
+        "preview",
+        "fullscreen",
+        "guide"
+      ],
+      "spellChecker": false
+    }
+  }
+}
+```
+      
+
 __Ace Editor__ is a syntax highlighting source code editor. You can use it by setting the format to any of the following:
 
 *  actionscript
@@ -1515,7 +1542,7 @@ By default, all instances of JSON Editor will use the `en` language.  To overrid
 JSONEditor.defaults.language = "es";
 ```
 
-Button Custimization
+Button Customization
 -----------------
 
 All buttons have classnames in the format `json-editor-btntype-*`. Using these classnames you can choose if the button should have icon or label hidden. The icon is wrapped in an `I` tag, the label is wrapped in a `SPAN` tag.
