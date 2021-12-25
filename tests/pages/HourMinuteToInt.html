@@ -8,8 +8,10 @@
 
 <textarea class="debug" cols="30" rows="10"></textarea>
 <button class='get-value'>Get Value</button>
-<button class='set-value01'>Set Value 1200</button>
-<button class='set-value02'>Set Value -32768</button>
+<button class='set-value01'>Set Value 19H 59M (1199)</button>
+<button class='set-value02'>Set Value 0H 0M -32768</button>
+<button class='set-value03'>Set Value 1H 32M 92</button>
+<button class='set-value04'>Set Value 0H 0M 0</button>
 <div class='container'></div>
 
 <script>
@@ -41,11 +43,19 @@
 
 
   document.querySelector('.set-value01').addEventListener('click', function () {
-    editor.setValue({"hourMinuteToInt":1200});
+    editor.setValue({"hourMinuteToInt":1199});
   });
 
   document.querySelector('.set-value02').addEventListener('click', function () {
     editor.setValue({"hourMinuteToInt":-32768});
+  });
+
+  document.querySelector('.set-value03').addEventListener('click', function () {
+    editor.setValue({"hourMinuteToInt": 92});
+  });
+
+  document.querySelector('.set-value04').addEventListener('click', function () {
+    editor.setValue({"hourMinuteToInt": 0});
   });
 
   
