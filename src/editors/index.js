@@ -10,6 +10,7 @@ import { ArraySelectizeEditor as arraySelectize } from './array/selectize.js'
 import { AutocompleteEditor as autocomplete } from './autocomplete.js'
 import { Base64Editor as base64 } from './base64.js'
 import { SelectBitEditor as selectBit } from './SelectBit.js'
+import { HourMinuteToIntEditor as hourMinuteToInt } from './hourMinuteToInt.js'
 import { ButtonEditor as button } from './button.js'
 import { CheckboxEditor as checkbox } from './checkbox.js'
 import { ChoicesEditor as choices } from './choices.js'
@@ -50,6 +51,7 @@ export const editors = {
   autocomplete,
   base64,
   selectBit,
+  hourMinuteToInt,
   button,
   checkbox,
   choices,
