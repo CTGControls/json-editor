@@ -2,63 +2,63 @@ import { AbstractEditor } from '../editor.js'
 import { isInteger } from '../utilities.js'
 
 export class HourMinuteToIntEditor extends AbstractEditor {
+
+  preBuild () {
+    super.preBuild()
+
+    //Build Hours input box
+    this.inputHours = this.theme.getFormInputField('input')
+
+    //Build Minutes input box
+    this.inputMinutes = this.theme.getFormInputField('input')
+  }
+
   build () {
     super.build()
 
-    //Create hours input box
-    //Build Hours input box
-    const inputHours = this.theme.getFormInputField('input')
-
+    //Setup Hours input box
     //Set the Hours input type to a number.
-    inputHours.setAttribute('type', 'number')
+    this.inputHours.setAttribute('type', 'number')
 
     //Set up the Hours input box as a step type
-    if (!inputHours.getAttribute('step')) {
-      inputHours.setAttribute('step', '1')
+    if (!this.inputHours.getAttribute('step')) {
+      this.inputHours.setAttribute('step', '1')
     }
 
-    //Set the min and mmax value for the Hour input box
-    inputHours.setAttribute('min', 0)
-    inputHours.setAttribute('max', 166)
+    //Set the min and max value for the Hour input box
+    this.inputHours.setAttribute('min', 0)
+    this.inputHours.setAttribute('max', 166)
 
-    //Create the Hours up down buttons
-    const stepperButtonsHours = this.theme.getStepperButtons(inputHours)
+    //Add a class to be used for updateing 
+    this.inputHours.classList.add('.inputHours')
 
     //Build the Hours table Cell
     const tableCellHours = this.theme.getTableCell()
 
     //Add the Hours input box to Hours table Cell
-    tableCellHours.appendChild(inputHours)
+    tableCellHours.appendChild(this.inputHours)
 
-    //Wire the Hours stepper buttons to the Hours input box value
-    this.stepperDownHours = tableCellHours.querySelector('.stepper-down')
-    this.stepperUpHours = tableCellHours.querySelector('.stepper-up')
-
-    //Create Minutes input box
-    //Build Minutes input box
-    const inputMinutes = this.theme.getFormInputField('input')
-
+    //Setup Minutes input box
     //Set up the Minutes box as a step
-    inputMinutes.setAttribute('type', 'number')
-    if (!inputMinutes.getAttribute('step')) {
-      inputMinutes.setAttribute('step', '1')
+    this.inputMinutes.setAttribute('type', 'number')
+
+    //Set up the Hours input box as a step type
+    if (!this.inputMinutes.getAttribute('step')) {
+      this.inputMinutes.setAttribute('step', '1')
     }
 
-    inputMinutes.setAttribute('min', 0)
-    inputMinutes.setAttribute('max', 59)
+    //Set the min and max value for the Minutes input box
+    this.inputMinutes.setAttribute('min', 0)
+    this.inputMinutes.setAttribute('max', 59)
 
-    //Create the Minutes up down buttons
-    const stepperButtonsMinutes = this.theme.getStepperButtons(inputMinutes)
+    //Add a class to be used for updateing 
+    this.inputMinutes.classList.add('.inputMinutes')
 
     //Build the minutes table Cell
     const tableCellMinutes = this.theme.getTableCell()
 
     //Add the minutes input box to minutes table Cell
-    tableCellMinutes.appendChild(inputMinutes)
-
-    //Wire the minutes stepper buttons to the minutes input box value
-    this.stepperDownMinutes = tableCellMinutes.querySelector('.stepper-down')
-    this.stepperUpMinute = tableCellMinutes.querySelector('.stepper-up')
+    tableCellMinutes.appendChild(this.inputMinutes)
 
     //create a table row for the control
     const tableRow = this.theme.getTableRow()
@@ -71,10 +71,11 @@ export class HourMinuteToIntEditor extends AbstractEditor {
 
     //Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
-      let totalhours = isInteger(inputHours.value) ? parseInt(inputHours.value) : 0
-      let totalMinutes = isInteger(inputMinutes.value) ? parseInt(inputMinutes.value) : 0
+      let totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
+      let totalMinutes = isInteger(this.inputMinutes.value) ? parseInt(this.inputMinutes.value) : 0
       let totalTime = (parseInt(totalhours) * 60 ) + parseInt(totalMinutes)
       this.setValue(totalTime)
+      this.onChange(true)
     }
 
     table.addEventListener('change', this.SomeThingChangedHandler, false)
@@ -88,23 +89,21 @@ export class HourMinuteToIntEditor extends AbstractEditor {
   }
 
   setValue (value, initial) {
+    if (value < 0) {
+      value = 0
+      this.value = 0
+    }
+
+    if (value >= 60) {
+      this.inputHours.value = parseInt(Math.floor(value / 60))
+      this.inputMinutes.value = value % 60
+    }else
+    {
+      this.inputHours.value = 0
+      this.inputMinutes.value = value
+    }
+
     this.value = value
     this.onChange(true)
-  }
-
-  enable () {
-    super.enable()
-    this.stepperDownHours.removeAttribute('disabled')
-    this.stepperUpHours.removeAttribute('disabled')
-    this.stepperDownMinutes.removeAttribute('disabled')
-    this.stepperUpMinute.removeAttribute('disabled')
-  }
-
-  disable () {
-    super.disable()
-    this.stepperDownHours.setAttribute('disabled', true)
-    this.stepperUpHours.setAttribute('disabled', true)
-    this.stepperDownMinutes.setAttribute('disabled', true)
-    this.stepperUpMinute.setAttribute('disabled', true)
   }
 }
