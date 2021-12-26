@@ -1,108 +1,118 @@
 import { AbstractEditor } from '../editor.js'
-import { isInteger } from '../utilities.js'
+import { isInteger, isNumber } from '../utilities.js'
 
 export class HourMinuteToIntEditor extends AbstractEditor {
-
   preBuild () {
     super.preBuild()
 
-    //Build Hours input box
+    // Build Hours input box
     this.inputHours = this.theme.getFormInputField('input')
 
-    //Build Minutes input box
+    // Build Minutes input box
     this.inputMinutes = this.theme.getFormInputField('input')
   }
 
   build () {
     super.build()
 
-    //Setup Hours input box
-    //Set the Hours input type to a number.
+    // Setup Hours input box
+    // Set the Hours input type to a number.
     this.inputHours.setAttribute('type', 'number')
 
-    //Set up the Hours input box as a step type
+    // Set up the Hours input box as a step type
     if (!this.inputHours.getAttribute('step')) {
       this.inputHours.setAttribute('step', '1')
     }
 
-    //Set the min and max value for the Hour input box
+    // Set the min and max value for the Hour input box
     this.inputHours.setAttribute('min', 0)
     this.inputHours.setAttribute('max', 166)
 
-    //Add a class to be used for updateing 
+    // Add a class to be used for updateing
     this.inputHours.classList.add('.inputHours')
 
-    //Build the Hours table Cell
+    // Build the Hours table Cell
     const tableCellHours = this.theme.getTableCell()
 
-    //Add the Hours input box to Hours table Cell
+    // Add the Hours input box to Hours table Cell
     tableCellHours.appendChild(this.inputHours)
 
-    //Setup Minutes input box
-    //Set up the Minutes box as a step
+    // Setup Minutes input box
+    // Set up the Minutes box as a step
     this.inputMinutes.setAttribute('type', 'number')
 
-    //Set up the Hours input box as a step type
+    // Set up the Hours input box as a step type
     if (!this.inputMinutes.getAttribute('step')) {
       this.inputMinutes.setAttribute('step', '1')
     }
 
-    //Set the min and max value for the Minutes input box
+    // Set the min and max value for the Minutes input box
     this.inputMinutes.setAttribute('min', 0)
     this.inputMinutes.setAttribute('max', 59)
 
-    //Add a class to be used for updateing 
+    // Add a class to be used for updateing
     this.inputMinutes.classList.add('.inputMinutes')
 
-    //Build the minutes table Cell
+    // Build the minutes table Cell
     const tableCellMinutes = this.theme.getTableCell()
 
-    //Add the minutes input box to minutes table Cell
+    // Add the minutes input box to minutes table Cell
     tableCellMinutes.appendChild(this.inputMinutes)
 
-    //create a table row for the control
+    // create a table row for the control
     const tableRow = this.theme.getTableRow()
-    //Add the cells to the row
+    // Add the cells to the row
     tableRow.appendChild(tableCellHours)
     tableRow.appendChild(tableCellMinutes)
 
-    //create a table for the for the control
+    // create a table for the for the control
     const table = this.theme.getTable()
 
-    //Add an event handler to update the controls value when one of the controls value is changed
+    // Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
-      let totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
-      let totalMinutes = isInteger(this.inputMinutes.value) ? parseInt(this.inputMinutes.value) : 0
-      let totalTime = (parseInt(totalhours) * 60 ) + parseInt(totalMinutes)
+      const totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
+      const totalMinutes = isInteger(this.inputMinutes.value) ? parseInt(this.inputMinutes.value) : 0
+      const totalTime = (parseInt(totalhours) * 60) + parseInt(totalMinutes)
       this.setValue(totalTime)
       this.onChange(true)
     }
 
+    // add a change event handler to the table
     table.addEventListener('change', this.SomeThingChangedHandler, false)
 
-    //add the row to the table
+    // add the row to the table
     table.appendChild(tableRow)
 
-    //Add the row to the AbstractEditor base container
+    // Add the table to the AbstractEditor base container
     this.container.appendChild(table)
-
   }
 
+  // called by the SomeThingChangedHandler
+  // every time the control is changed
   setValue (value, initial) {
+    // Check to see if the value is a number
+    value = isNumber(value.toString()) ? value : 0
+
+    // Check to see if the value is a int
+    value = isInteger(value.toString()) ? parseInt(value) : 0
+
+    // Check to see if the number is less then zero
     if (value < 0) {
       value = 0
       this.value = 0
     }
 
+    // if the number is one hour or more do the math to separate the hours and minutes
+    // else just move the value to the minutes
     if (value >= 60) {
       this.inputHours.value = parseInt(Math.floor(value / 60))
-      this.inputMinutes.value = value % 60
-    }else
-    {
+      this.inputMinutes.value = parseInt(Math.floor(value % 60))
+    } else {
       this.inputHours.value = 0
       this.inputMinutes.value = value
     }
 
+    // update the global storge value
     this.value = value
     this.onChange(true)
   }
