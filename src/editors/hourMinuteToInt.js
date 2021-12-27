@@ -6,52 +6,91 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     super.preBuild()
 
     // Build Hours input box
-    this.inputHours = this.theme.getFormInputField('input')
+    this.inputHours = this.buildInputBox(0,null)
 
     // Build Minutes input box
-    this.inputMinutes = this.theme.getFormInputField('input')
+    this.inputMinutes = this.buildInputBox(0,59)
+
+    // Add a lable for the inputHours
+    this.lable = this.header = this.theme.getFormInputLabel(this.getTitle(), this.isRequired())
+
+    // create a table for the for the controls
+    this.table = this.theme.getTable()
+
+    // Add the lable to the tables top row
+    if (this.lable.innerText !== ''){
+      const tableCellTitle = this.theme.getTableCell()
+      tableCellTitle.appendChild(this.lable)
+      const tableRowTitle = this.theme.getTableRow()
+      tableRowTitle.appendChild(tableCellTitle)
+      this.table.appendChild(tableRowTitle)
+    } 
+  }
+
+  //used to build a input box with all Attribute needed
+  buildInputBox (min, max) {
+    const input = this.theme.getFormInputField('input')
+
+    // Set the input type to a number.
+    input.setAttribute('type', 'number')
+
+    // Set up the input box as a step type
+    if (!input.getAttribute('step')) {
+      input.setAttribute('step', '1')
+    }
+
+    // Set the minimum value for the input box from the schema
+    if (min === 'undefined' || min === null ) {    
+        if (typeof this.schema.minimum !== 'undefined') {
+          let { minimum } = this.schema
+
+          if (typeof this.schema.exclusiveMinimum !== 'undefined') {
+            minimum += 1
+          }
+
+          if (minimum > 0) {
+            input.setAttribute('min', minimum)
+          } else {
+            input.setAttribute('min', 0)
+          }
+      }
+    } else {
+      //if the minimum value is overridden set from the caller 
+      input.setAttribute('min', min)
+    }
+
+    // Set the maximum value for the input box from the schema
+    if (max === 'undefined' || max === null ) {    
+      if (typeof this.schema.maximum !== 'undefined') {
+        let { maximum } = this.schema
+
+        if (typeof this.schema.exclusiveMaximum !== 'undefined') {
+          maximum -= 1
+        }
+
+        if (maximum > 0) {
+          input.setAttribute('max', Math.floor((maximum - 59) / 60))
+        } else {
+          input.setAttribute('max', 59)
+        }
+      }
+    } else {
+      //if the maximum value is overridden set from the caller 
+      input.setAttribute('max', max)
+    }
+    
+  
+  return input
   }
 
   build () {
     super.build()
-
-    // Setup Hours input box
-    // Set the Hours input type to a number.
-    this.inputHours.setAttribute('type', 'number')
-
-    // Set up the Hours input box as a step type
-    if (!this.inputHours.getAttribute('step')) {
-      this.inputHours.setAttribute('step', '1')
-    }
-
-    // Set the min and max value for the Hour input box
-    this.inputHours.setAttribute('min', 0)
-    this.inputHours.setAttribute('max', 166)
-
-    // Add a class to be used for updateing
-    this.inputHours.classList.add('.inputHours')
 
     // Build the Hours table Cell
     const tableCellHours = this.theme.getTableCell()
 
     // Add the Hours input box to Hours table Cell
     tableCellHours.appendChild(this.inputHours)
-
-    // Setup Minutes input box
-    // Set up the Minutes box as a step
-    this.inputMinutes.setAttribute('type', 'number')
-
-    // Set up the Hours input box as a step type
-    if (!this.inputMinutes.getAttribute('step')) {
-      this.inputMinutes.setAttribute('step', '1')
-    }
-
-    // Set the min and max value for the Minutes input box
-    this.inputMinutes.setAttribute('min', 0)
-    this.inputMinutes.setAttribute('max', 59)
-
-    // Add a class to be used for updateing
-    this.inputMinutes.classList.add('.inputMinutes')
 
     // Build the minutes table Cell
     const tableCellMinutes = this.theme.getTableCell()
@@ -65,9 +104,6 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     tableRow.appendChild(tableCellHours)
     tableRow.appendChild(tableCellMinutes)
 
-    // create a table for the for the control
-    const table = this.theme.getTable()
-
     // Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
       const totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
@@ -78,13 +114,13 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     }
 
     // add a change event handler to the table
-    table.addEventListener('change', this.SomeThingChangedHandler, false)
+    this.table.addEventListener('change', this.SomeThingChangedHandler, false)
 
     // add the row to the table
-    table.appendChild(tableRow)
+    this.table.appendChild(tableRow)
 
     // Add the table to the AbstractEditor base container
-    this.container.appendChild(table)
+    this.container.appendChild(this.table)
   }
 
   // called by the SomeThingChangedHandler
