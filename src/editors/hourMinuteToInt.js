@@ -1,6 +1,24 @@
 import { AbstractEditor } from '../editor.js'
 import { isInteger, isNumber } from '../utilities.js'
 
+/// <summary>
+/// Used for SuperSystems.Com 9xxx controllers
+/// the controllers hold time in a short of total min
+/// but users like to see the time in hours and minutes
+/// </summary>
+/// <param name="minimum">Minimum time setting. Not currently implemented.</param>
+/// <param name="minimum">Maximum time setting. Used for hours only.</param>
+/// <param name="ShowDisableCheckBox">
+///   Boolean value : ,
+///   true or undefined = show check box ,
+///   false = hides the check box
+/// </param>
+/// <param name="disabledValue">
+///   Integer value : ,
+///   integer = sets the disable value ,
+///   undefined = -1
+/// </param>
+/// <returns>integer</returns>
 export class HourMinuteToIntEditor extends AbstractEditor {
   preBuild () {
     super.preBuild()
@@ -26,6 +44,7 @@ export class HourMinuteToIntEditor extends AbstractEditor {
       this.table.appendChild(tableRowTitle)
     }
 
+    // Build a disable ckeck box
     this.disableCheckBox = this.theme.getCheckbox()
   }
 
@@ -130,6 +149,9 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     // add the row to the table
     this.table.appendChild(tableRow)
 
+    // check to see if the disable box is undefined in the schema 
+    // or requested to be shown
+    // if it is build the check box and add it to the table
     if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
       const disableCheckBoxLable = this.theme.getCheckboxLabel('Disable')
 
