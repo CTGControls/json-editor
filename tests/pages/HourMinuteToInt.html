@@ -26,11 +26,15 @@
         "type": 'integer',
         "format": 'hourMinuteToInt',
         "title": "soak time",
-        "minimum": 0,
-        "maximum": 10019
+        "minimum": -2,
+        "maximum": 10019,
+        "ShowDisableCheckBox" : false,
+        "disabledValue" : -1
       }
     }
   };
+
+
 
   var editor = new JSONEditor(container, {
     schema: schema
