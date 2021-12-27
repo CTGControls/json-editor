@@ -6,10 +6,10 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     super.preBuild()
 
     // Build Hours input box
-    this.inputHours = this.buildInputBox(0,null)
+    this.inputHours = this.buildInputBox(0, null)
 
     // Build Minutes input box
-    this.inputMinutes = this.buildInputBox(0,59)
+    this.inputMinutes = this.buildInputBox(0, 59)
 
     // Add a lable for the inputHours
     this.lable = this.header = this.theme.getFormInputLabel(this.getTitle(), this.isRequired())
@@ -18,16 +18,16 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     this.table = this.theme.getTable()
 
     // Add the lable to the tables top row
-    if (this.lable.innerText !== ''){
+    if (this.lable.innerText !== '') {
       const tableCellTitle = this.theme.getTableCell()
       tableCellTitle.appendChild(this.lable)
       const tableRowTitle = this.theme.getTableRow()
       tableRowTitle.appendChild(tableCellTitle)
       this.table.appendChild(tableRowTitle)
-    } 
+    }
   }
 
-  //used to build a input box with all Attribute needed
+  // used to build a input box with all Attribute needed
   buildInputBox (min, max) {
     const input = this.theme.getFormInputField('input')
 
@@ -40,27 +40,27 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     }
 
     // Set the minimum value for the input box from the schema
-    if (min === 'undefined' || min === null ) {    
-        if (typeof this.schema.minimum !== 'undefined') {
-          let { minimum } = this.schema
+    if (min === 'undefined' || min === null) {
+      if (typeof this.schema.minimum !== 'undefined') {
+        let { minimum } = this.schema
 
-          if (typeof this.schema.exclusiveMinimum !== 'undefined') {
-            minimum += 1
-          }
+        if (typeof this.schema.exclusiveMinimum !== 'undefined') {
+          minimum += 1
+        }
 
-          if (minimum > 0) {
-            input.setAttribute('min', minimum)
-          } else {
-            input.setAttribute('min', 0)
-          }
+        if (minimum > 0) {
+          input.setAttribute('min', minimum)
+        } else {
+          input.setAttribute('min', 0)
+        }
       }
     } else {
-      //if the minimum value is overridden set from the caller 
+      // if the minimum value is overridden set from the caller
       input.setAttribute('min', min)
     }
 
     // Set the maximum value for the input box from the schema
-    if (max === 'undefined' || max === null ) {    
+    if (max === 'undefined' || max === null) {
       if (typeof this.schema.maximum !== 'undefined') {
         let { maximum } = this.schema
 
@@ -75,12 +75,11 @@ export class HourMinuteToIntEditor extends AbstractEditor {
         }
       }
     } else {
-      //if the maximum value is overridden set from the caller 
+      // if the maximum value is overridden set from the caller
       input.setAttribute('max', max)
     }
-    
-  
-  return input
+
+    return input
   }
 
   build () {
