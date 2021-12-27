@@ -115,7 +115,6 @@ export class HourMinuteToIntEditor extends AbstractEditor {
           this.inputHours.removeAttribute('hidden')
           this.inputMinutes.removeAttribute('hidden')
         }
-        
       }
 
       const totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
@@ -123,8 +122,6 @@ export class HourMinuteToIntEditor extends AbstractEditor {
       const totalTime = (parseInt(totalhours) * 60) + parseInt(totalMinutes)
       this.setValue(totalTime)
       this.onChange(true)
-
-
     }
 
     // add a change event handler to the table
@@ -137,18 +134,15 @@ export class HourMinuteToIntEditor extends AbstractEditor {
       const disableCheckBoxLable = this.theme.getCheckboxLabel('Disable')
 
       const disableCheckBoxControl = this.theme.getFormControl(disableCheckBoxLable, this.disableCheckBox)
-  
+
       const tableCellDisableCheckBox = this.theme.getTableCell()
       tableCellDisableCheckBox.appendChild(disableCheckBoxControl)
-  
+
       const tableRowDisableCheckBox = this.theme.getTableRow()
       tableRowDisableCheckBox.appendChild(tableCellDisableCheckBox)
-  
+
       this.table.appendChild(tableRowDisableCheckBox)
     }
-
-
-
 
     // Add the table to the AbstractEditor base container
     this.container.appendChild(this.table)
@@ -181,7 +175,6 @@ export class HourMinuteToIntEditor extends AbstractEditor {
 
     if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
       if (this.disableCheckBox.checked) {
-
         if (typeof this.schema.disabledValue === 'undefined') {
           value = -1
         } else {
