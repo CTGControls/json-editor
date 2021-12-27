@@ -149,7 +149,7 @@ export class HourMinuteToIntEditor extends AbstractEditor {
     // add the row to the table
     this.table.appendChild(tableRow)
 
-    // check to see if the disable box is undefined in the schema 
+    // check to see if the disable box is undefined in the schema
     // or requested to be shown
     // if it is build the check box and add it to the table
     if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
