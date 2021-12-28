@@ -106,10 +106,17 @@ const ssiSelectbit = schema => {
   }
 }
 
-/* Use the bit select editor for schemas with type `integer` and format `ssiHourMinuteToInt` */
-const ssiHourMinuteToInt = schema => {
-  if ((schema.type === 'integer') && schema.format === 'ssiHourMinuteToInt') {
-    return 'ssiHourMinuteToInt'
+/* Use the Hour Minute editor for schemas with type `integer` and format `ssiHourMinuteToInt` */
+const ssiHourMinute = schema => {
+  if ((schema.type === 'integer') && schema.format === 'ssiHourMinute') {
+    return 'ssiHourMinute'
+  }
+}
+
+/* Use the Set Point editor for schemas with type `integer` and format `ssiSetPoint` */
+const ssiSetPoint = schema => {
+  if ((schema.type === 'integer') && schema.format === 'ssiSetPoint') {
+    return 'ssiSetPoint'
   }
 }
 
@@ -137,4 +144,4 @@ const ip = schema => schema.type === 'string' && ['ip', 'ipv4', 'ipv6', 'hostnam
 const colorPicker = schema => schema.type === 'string' && schema.format === 'color' && 'colorpicker'
 
 /* Export resolvers in order of discovery, first to last */
-export const resolvers = [colorPicker, ip, ace, xhtml, markdown, jodit, autoComplete, uuid, info, button, stepper, ssiSelectbit, ssiHourMinuteToInt, describeBy, starratings, date, oneOf, arraysOfStrings, enumeratedProperties, enumSource, table, upload, base64, any, boolean, signature, primitive, object, defaultResolver]
+export const resolvers = [colorPicker, ip, ace, xhtml, markdown, jodit, autoComplete, uuid, info, button, stepper, ssiSelectbit, ssiHourMinute, ssiSetPoint, describeBy, starratings, date, oneOf, arraysOfStrings, enumeratedProperties, enumSource, table, upload, base64, any, boolean, signature, primitive, object, defaultResolver]
