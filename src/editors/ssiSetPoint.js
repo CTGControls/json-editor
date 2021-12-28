@@ -82,9 +82,15 @@ export class ssiSetPointEditor extends AbstractEditor {
     // Set the input type to a number.
     input.setAttribute('type', 'number')
 
-    // Set up the input box as a step type
+    // Set up the input box as a step type ,
+    // and set number the up button adds to the value
+    // and set number the down button subtracts from the value
     if (!input.getAttribute('step')) {
-      input.setAttribute('step', '1')
+      if (typeof this.schema.step !== 'undefined' && isNumber(this.schema.step.toString())) {
+        input.setAttribute('step', '1')
+      } else {
+        input.setAttribute('step', this.schema.step)
+      }
     }
 
     // Set the minimum value for the input box from the schema
