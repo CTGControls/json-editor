@@ -22,11 +22,11 @@
   "type": "object",
   "title": "Car",
   "properties": {
-      "hourMinuteToInt": {
+      "option": {
         "type": 'integer',
-        "format": 'hourMinuteToInt',
+        "format": 'ssiHourMinuteToInt',
         "title": "soak time",
-        "minimum": -2,
+        "minimum": 0,
         "maximum": 10019,
         "ShowDisableCheckBox" : false,
         "disabledValue" : -1
@@ -44,19 +44,19 @@
 
 
   document.querySelector('.set-value01').addEventListener('click', function () {
-    editor.setValue({"hourMinuteToInt":1199});
+    editor.setValue({"option":1199});
   });
 
   document.querySelector('.set-value02').addEventListener('click', function () {
-    editor.setValue({"hourMinuteToInt":-32768});
+    editor.setValue({"option":-32768});
   });
 
   document.querySelector('.set-value03').addEventListener('click', function () {
-    editor.setValue({"hourMinuteToInt": 92});
+    editor.setValue({"option": 92});
   });
 
   document.querySelector('.set-value04').addEventListener('click', function () {
-    editor.setValue({"hourMinuteToInt": 0});
+    editor.setValue({"option": 0});
   });
 
   

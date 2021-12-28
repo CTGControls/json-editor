@@ -2,10 +2,29 @@ import { AbstractEditor } from '../editor.js'
 import { isInteger, isNumber } from '../utilities.js'
 
 /// <summary>
-/// Used for SuperSystems.Com 9xxx controllers
-/// the controllers hold time in a short of total min
-/// but users like to see the time in hours and minutes
+/// Used for SuperSystems.Com (SSi) 9xxx controllers.
+/// The time in the SSi in in a short of total min
+/// but users like to see the time in hours and minutes.
+/// This editor displays the time in hours and minutes
+/// but reads and saves the time in minutes.
+/// All parameters names are case sensitive
 /// </summary>
+/// <example>
+///   <code>
+///   "option": {
+///     "type": 'integer',
+///     "format": 'SSI_HourMinuteToInt',
+///     "title": "soak time",
+///     "minimum": -2,
+///     "maximum": 10019,
+///     "ShowDisableCheckBox" : false,
+///     "disabledValue" : -1
+///   }
+///   </code>
+/// </example>
+/// <param name="type">Must be a type of integer (Case </param>
+/// <param name="format">Must be a type of SSI_HourMinuteToInt</param>
+/// <param name="title">Title of the control.</param>
 /// <param name="minimum">Minimum time setting. Not currently implemented.</param>
 /// <param name="minimum">Maximum time setting. Used for hours only.</param>
 /// <param name="ShowDisableCheckBox">
@@ -19,7 +38,7 @@ import { isInteger, isNumber } from '../utilities.js'
 ///   undefined = -1
 /// </param>
 /// <returns>integer</returns>
-export class HourMinuteToIntEditor extends AbstractEditor {
+export class ssiHourMinuteToIntEditor extends AbstractEditor {
   preBuild () {
     super.preBuild()
 
