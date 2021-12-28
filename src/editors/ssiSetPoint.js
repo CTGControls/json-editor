@@ -94,43 +94,44 @@ export class ssiSetPointEditor extends AbstractEditor {
     }
 
     // Set the minimum value for the input box from the schema
+    let minimum = 0
     if (min === 'undefined' || min === null) {
       if (typeof this.schema.minimum !== 'undefined') {
-        let { minimum } = this.schema
+        minimum = this.schema.minimum
 
         if (typeof this.schema.exclusiveMinimum !== 'undefined') {
           minimum += 1
         }
-
-        if (minimum >= -32767) {
-          input.setAttribute('min', minimum)
-        } else {
-          input.setAttribute('min', -32767)
-        }
       }
     } else {
       // if the minimum value is overridden set from the caller
-      input.setAttribute('min', min)
+      minimum = min
+    }
+    if (minimum >= -32768) {
+      input.setAttribute('min', minimum)
+    } else {
+      input.setAttribute('min', -32768)
     }
 
     // Set the maximum value for the input box from the schema
+    let maximum = 0
     if (max === 'undefined' || max === null) {
       if (typeof this.schema.maximum !== 'undefined') {
-        let { maximum } = this.schema
+        maximum = this.schema.maximum
 
         if (typeof this.schema.exclusiveMaximum !== 'undefined') {
           maximum -= 1
         }
-
-        if (maximum <= 32768) {
-          input.setAttribute('max', maximum)
-        } else {
-          input.setAttribute('max', 32768)
-        }
       }
     } else {
       // if the maximum value is overridden set from the caller
-      input.setAttribute('max', max)
+      maximum = max
+    }
+
+    if (maximum <= 32768) {
+      input.setAttribute('max', maximum)
+    } else {
+      input.setAttribute('max', 32768)
     }
 
     return input
