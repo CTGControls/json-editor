@@ -86,7 +86,7 @@ export class ssiSetPointEditor extends AbstractEditor {
     // and set number the up button adds to the value
     // and set number the down button subtracts from the value
     if (!input.getAttribute('step')) {
-      if (typeof this.schema.step !== 'undefined' && isNumber(this.schema.step.toString())) {
+      if (typeof this.schema.step !== 'undefined' && !(isNumber(this.schema.step.toString()))) {
         input.setAttribute('step', '1')
       } else {
         input.setAttribute('step', this.schema.step)
