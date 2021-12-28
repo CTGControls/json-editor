@@ -3,22 +3,24 @@ import { isInteger, isNumber } from '../utilities.js'
 
 /// <summary>
 /// Used for SuperSystems.Com (SSi) 9xxx controllers.
-/// The time in the SSi in in a short of total min
-/// but users like to see the time in hours and minutes.
-/// This editor displays the time in hours and minutes
-/// but reads and saves the time in minutes.
+/// The set point in the SSi in in a short so if you would
+/// like a decimal number you need to off set the number.
+/// This editor displays the set point as a decimal
+/// but reads and saves the set point as a short.
 /// All parameters names are case sensitive
 /// </summary>
 /// <example>
 ///   <code>
-///   "option": {
+///   "loop2": {
 ///     "type": 'integer',
-///     "format": 'SSI_HourMinuteToInt',
-///     "title": "soak time",
+///     "format": 'ssiSetPoint',
+///     "title": "carbon",
 ///     "minimum": -2,
 ///     "maximum": 10019,
 ///     "ShowDisableCheckBox" : false,
-///     "disabledValue" : -1
+///     "disabledValue" : -1,
+///     "step" : 0.01,
+///     "impliedDecimalPoints" : 2
 ///   }
 ///   </code>
 /// </example>
@@ -36,6 +38,15 @@ import { isInteger, isNumber } from '../utilities.js'
 ///   Integer value : ,
 ///   integer = sets the disable value ,
 ///   undefined = -1
+/// </param>
+/// <param name="step">
+///   Integer value : ,
+///   number the up button adds to the value
+///   number the down button subtracts from the value
+/// </param>
+/// <param name="impliedDecimalPoints">
+///   Integer value : ,
+///   number of implied decimal points
 /// </param>
 /// <returns>integer</returns>
 export class ssiSetPointEditor extends AbstractEditor {
@@ -125,7 +136,7 @@ export class ssiSetPointEditor extends AbstractEditor {
     // Build the input table Cell
     const tableCellInput = this.theme.getTableCell()
 
-    // Add the Hours input box to Hours table Cell
+    // Add the input box to table Cell
     tableCellInput.appendChild(this.input)
 
     // create a table row for the control
