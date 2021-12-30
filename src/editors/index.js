@@ -9,9 +9,9 @@ import { ArraySelect2Editor as arraySelect2 } from './array/select2.js'
 import { ArraySelectizeEditor as arraySelectize } from './array/selectize.js'
 import { AutocompleteEditor as autocomplete } from './autocomplete.js'
 import { Base64Editor as base64 } from './base64.js'
-import { ssiSelectBitEditor as ssiSelectBit } from './ssiSelectBit.js'
-import { ssiHourMinuteEditor as ssiHourMinute } from './ssiHourMinute.js'
-import { ssiSetPointEditor as ssiSetPoint } from './ssiSetPoint.js'
+import { ffmSelectBitEditor as ffmSelectBit } from './ffmSelectBit.js'
+import { ffmHourMinuteEditor as ffmHourMinute } from './ffmHourMinute.js'
+import { ffmSetPointEditor as ffmSetPoint } from './ffmSetPoint.js'
 import { ButtonEditor as button } from './button.js'
 import { CheckboxEditor as checkbox } from './checkbox.js'
 import { ChoicesEditor as choices } from './choices.js'
@@ -51,9 +51,9 @@ export const editors = {
   arraySelectize,
   autocomplete,
   base64,
-  ssiSelectBit,
-  ssiHourMinute,
-  ssiSetPoint,
+  ffmSelectBit,
+  ffmHourMinute,
+  ffmSetPoint,
   button,
   checkbox,
   choices,

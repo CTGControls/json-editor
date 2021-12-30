@@ -1,6 +1,6 @@
 import { AbstractEditor } from '../editor.js'
 
-export class ssiSelectBitEditor extends AbstractEditor {
+export class ffmSelectBitEditor extends AbstractEditor {
   onInputChange () {
     this.value = this.input.value
     this.onChange(true)
