@@ -53,6 +53,8 @@ export class ffmSetPointEditor extends AbstractEditor {
   preBuild () {
     super.preBuild()
 
+    this.disabledValueDefault = -1
+
     // Build input box
     this.input = this.buildInputBox(null, null)
 
@@ -154,14 +156,16 @@ export class ffmSetPointEditor extends AbstractEditor {
 
     // Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
-      if (typeof this.schema.ShowDisableCheckBox !== 'undefined' || this.schema.ShowDisableCheckBox === true) {
-        if (this.disableCheckBox.checked) {
-          this.input.setAttribute('hidden', true)
-        } else {
-          this.input.removeAttribute('hidden')
-        }
+      console.log('find it')
+      var valueLocal = isNumber(this.input.value.toString()) ? this.input.value : 0
+
+      if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
+        const impliedDecimalPoints = this.schema.impliedDecimalPoints
+        const mathPowerOf10 = Math.pow(10, impliedDecimalPoints)
+        valueLocal = valueLocal * mathPowerOf10
       }
-      this.setValue(this.input.value)
+
+      this.setValue(valueLocal)
       this.onChange(true)
     }
 
@@ -195,43 +199,55 @@ export class ffmSetPointEditor extends AbstractEditor {
   // called by the SomeThingChangedHandler
   // every time the control is changed
   setValue (value, initial) {
-    // Check to see if the value is a number
-    value = isNumber(value.toString()) ? value : 0
+    // Check to see if the value is a int
+    var valueLocal = isNumber(value.toString()) ? value : 0
 
     if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
       const impliedDecimalPoints = this.schema.impliedDecimalPoints
-      value *= Math.pow(10, impliedDecimalPoints)
-      this.input.value = value / Math.pow(10, impliedDecimalPoints)
+      const mathPowerOf10 = Math.pow(10, impliedDecimalPoints)
+      this.input.value = (valueLocal / mathPowerOf10).toFixed(impliedDecimalPoints)
+    } else {
+      this.input.value = valueLocal
     }
 
-    value = Math.floor(value)
+    if (typeof this.schema.ShowDisableCheckBox !== 'undefined' || this.schema.ShowDisableCheckBox === true) {
+      if (
+        (typeof this.schema.disabledValue === 'undefined' && this.disabledValueDefault === this.input.value) ||
+        (typeof this.schema.disabledValue !== 'undefined' && this.schema.disabledValue === value)
+      ) {
+        this.disableCheckBox.checked = true
+        this.input.setAttribute('hidden', true)
+      } else {
+        this.disableCheckBox.checked = false
+        this.input.removeAttribute('hidden')
+      }
+    }
 
-    // Check to see if the value is a int
-    value = isInteger(value.toString()) ? parseInt(value) : 0
+    valueLocal = Math.floor(valueLocal)
 
     // Check to see if the number is less then -32767
-    if (value < -32767) {
-      value = -32767
-      this.value = -32767
+    if (valueLocal < -32767) {
+      valueLocal = -32767
+      this.valueLocal = -32767
     }
 
-    if (value > 32768) {
-      value = 32768
-      this.value = -32768
+    if (valueLocal > 32768) {
+      valueLocal = 32768
+      this.valueLocal = -32768
     }
 
     if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
       if (this.disableCheckBox.checked) {
         if (typeof this.schema.disabledValue === 'undefined') {
-          value = -1
+          valueLocal = this.disabledValueDefault
         } else {
-          value = isInteger(this.schema.disabledValue.toString()) ? parseInt(this.schema.disabledValue) : -301
+          valueLocal = isInteger(this.schema.disabledValue.toString()) ? parseInt(this.schema.disabledValue) : this.disabledValueDefault
         }
       }
     }
 
     // update the global storge value
-    this.value = value
+    this.value = valueLocal
     this.onChange(true)
   }
 }

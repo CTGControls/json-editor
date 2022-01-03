@@ -8,10 +8,11 @@
 
 <textarea class="debug" cols="30" rows="10"></textarea>
 <button class='get-value'>Get Value</button>
-<button class='set-value01'>Set Value 19H 59M (1199)</button>
-<button class='set-value02'>Set Value 0H 0M -32768</button>
-<button class='set-value03'>Set Value 1H 32M 92</button>
-<button class='set-value04'>Set Value 0H 0M 0</button>
+<button class='set-value01'>Set Value Temp = 1199, Carbon = 12</button>
+<button class='set-value02'>Set Value Temp = 1750, Carbon = -1</button>
+<button class='set-value03'>Set Value Temp = -301, Carbon = 150</button>
+<button class='set-value04'>Set Value Temp = -301, Carbon = -1</button>
+<button class='set-value05'>Set Value Temp = 1200, Carbon = 100</button>
 <div class='container'></div>
 
 <script>
@@ -57,19 +58,22 @@
 
 
   document.querySelector('.set-value01').addEventListener('click', function () {
-    editor.setValue({"loop1":3,"loop2":0});
+    editor.setValue({"loop1":1199,"loop2":12});
   });
 
   document.querySelector('.set-value02').addEventListener('click', function () {
-    editor.setValue({"loop1":3,"loop2":0});
+    editor.setValue({"loop1":1750,"loop2":-1});
   });
 
   document.querySelector('.set-value03').addEventListener('click', function () {
-    editor.setValue({"loop1":3,"loop2":0});
+    editor.setValue({"loop1":-301,"loop2":150});
   });
 
   document.querySelector('.set-value04').addEventListener('click', function () {
-    editor.setValue({"loop1":3,"loop2":0});
+    editor.setValue({"loop1":-301,"loop2":-1});
+  });
+  document.querySelector('.set-value05').addEventListener('click', function () {
+    editor.setValue({"loop1":1200,"loop2":100});
   });
 
   
