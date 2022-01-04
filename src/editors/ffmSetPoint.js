@@ -1,5 +1,6 @@
 import { AbstractEditor } from '../editor.js'
-import { isInteger, isNumber } from '../utilities.js'
+import { isNumber } from '../utilities.js'
+import { buildInputBox, checkIfDisabled, getDisabledValue } from '../ffmUtilities.js'
 
 /// <summary>
 /// Used for SuperSystems.Com (SSi) 9xxx controllers.
@@ -54,9 +55,10 @@ export class ffmSetPointEditor extends AbstractEditor {
     super.preBuild()
 
     this.disabledValueDefault = -1
+    this.disableCheckBoxId = this.path + '.disable'
 
     // Build input box
-    this.input = this.buildInputBox(null, null)
+    this.input = buildInputBox(null, null, this.theme, this.schema)
 
     // Add a lable for the input
     this.lable = this.header = this.theme.getFormInputLabel(this.getTitle(), this.isRequired())
@@ -75,68 +77,7 @@ export class ffmSetPointEditor extends AbstractEditor {
 
     // Build a disable ckeck box
     this.disableCheckBox = this.theme.getCheckbox()
-  }
-
-  // used to build a input box with all Attribute needed
-  buildInputBox (min, max) {
-    const input = this.theme.getFormInputField('input')
-
-    // Set the input type to a number.
-    input.setAttribute('type', 'number')
-
-    // Set up the input box as a step type ,
-    // and set number the up button adds to the value
-    // and set number the down button subtracts from the value
-    if (!input.getAttribute('step')) {
-      if (typeof this.schema.step !== 'undefined' && !(isNumber(this.schema.step.toString()))) {
-        input.setAttribute('step', '1')
-      } else {
-        input.setAttribute('step', this.schema.step)
-      }
-    }
-
-    // Set the minimum value for the input box from the schema
-    let minimum = 0
-    if (min === 'undefined' || min === null) {
-      if (typeof this.schema.minimum !== 'undefined') {
-        minimum = this.schema.minimum
-
-        if (typeof this.schema.exclusiveMinimum !== 'undefined') {
-          minimum += 1
-        }
-      }
-    } else {
-      // if the minimum value is overridden set from the caller
-      minimum = min
-    }
-    if (minimum >= -32768) {
-      input.setAttribute('min', minimum)
-    } else {
-      input.setAttribute('min', -32768)
-    }
-
-    // Set the maximum value for the input box from the schema
-    let maximum = 0
-    if (max === 'undefined' || max === null) {
-      if (typeof this.schema.maximum !== 'undefined') {
-        maximum = this.schema.maximum
-
-        if (typeof this.schema.exclusiveMaximum !== 'undefined') {
-          maximum -= 1
-        }
-      }
-    } else {
-      // if the maximum value is overridden set from the caller
-      maximum = max
-    }
-
-    if (maximum <= 32768) {
-      input.setAttribute('max', maximum)
-    } else {
-      input.setAttribute('max', 32768)
-    }
-
-    return input
+    this.disableCheckBox.id = this.disableCheckBoxId.toString()
   }
 
   build () {
@@ -156,14 +97,22 @@ export class ffmSetPointEditor extends AbstractEditor {
 
     // Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
-      console.log('find it')
       var valueLocal = isNumber(this.input.value.toString()) ? this.input.value : 0
 
-      if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
-        const impliedDecimalPoints = this.schema.impliedDecimalPoints
-        const mathPowerOf10 = Math.pow(10, impliedDecimalPoints)
-        valueLocal = valueLocal * mathPowerOf10
+      // Check to see if the check box is being clicked on and get it value
+      // if the diable check box is checked get then use the disable value
+      if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() && e.target.checked) {
+        valueLocal = getDisabledValue(null, this.schema, this.disabledValue)
+      } else {
+        if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
+          const impliedDecimalPoints = this.schema.impliedDecimalPoints
+          const mathPowerOf10 = Math.pow(10, impliedDecimalPoints)
+          valueLocal = valueLocal * mathPowerOf10
+        }
       }
+
+      this.setValue(valueLocal)
+      this.onChange(true)
 
       this.setValue(valueLocal)
       this.onChange(true)
@@ -199,9 +148,26 @@ export class ffmSetPointEditor extends AbstractEditor {
   // called by the SomeThingChangedHandler
   // every time the control is changed
   setValue (value, initial) {
+    if (checkIfDisabled(value, this.schema)) {
+      this.disableCheckBox.checked = true
+      this.input.value = 0
+
+      this.input.setAttribute('hidden', true)
+
+      this.value = getDisabledValue(value, this.schema, this.disabledValue)
+      this.onChange(true)
+
+      return
+    }
+
     // Check to see if the value is a int
     var valueLocal = isNumber(value.toString()) ? value : 0
 
+    this.disableCheckBox.checked = false
+    this.input.removeAttribute('hidden')
+
+    // Format the listbox Data
+    // If the control has an impliedDecimalPoints setting above 0
     if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
       const impliedDecimalPoints = this.schema.impliedDecimalPoints
       const mathPowerOf10 = Math.pow(10, impliedDecimalPoints)
@@ -215,6 +181,7 @@ export class ffmSetPointEditor extends AbstractEditor {
         (typeof this.schema.disabledValue === 'undefined' && this.disabledValueDefault === this.input.value) ||
         (typeof this.schema.disabledValue !== 'undefined' && this.schema.disabledValue === value)
       ) {
+        this.input.value = 0
         this.disableCheckBox.checked = true
         this.input.setAttribute('hidden', true)
       } else {
@@ -228,22 +195,10 @@ export class ffmSetPointEditor extends AbstractEditor {
     // Check to see if the number is less then -32767
     if (valueLocal < -32767) {
       valueLocal = -32767
-      this.valueLocal = -32767
     }
 
     if (valueLocal > 32768) {
       valueLocal = 32768
-      this.valueLocal = -32768
-    }
-
-    if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
-      if (this.disableCheckBox.checked) {
-        if (typeof this.schema.disabledValue === 'undefined') {
-          valueLocal = this.disabledValueDefault
-        } else {
-          valueLocal = isInteger(this.schema.disabledValue.toString()) ? parseInt(this.schema.disabledValue) : this.disabledValueDefault
-        }
-      }
     }
 
     // update the global storge value

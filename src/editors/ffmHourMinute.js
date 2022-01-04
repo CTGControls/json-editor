@@ -1,5 +1,6 @@
 import { AbstractEditor } from '../editor.js'
 import { isInteger, isNumber } from '../utilities.js'
+import { buildInputBox, checkIfDisabled, getDisabledValue } from '../ffmUtilities.js'
 
 /// <summary>
 /// Used for SuperSystems.Com (SSi) 9xxx controllers.
@@ -42,11 +43,14 @@ export class ffmHourMinuteEditor extends AbstractEditor {
   preBuild () {
     super.preBuild()
 
+    this.disabledValueDefault = -1
+    this.disableCheckBoxId = this.path + '.disable'
+
     // Build Hours input box
-    this.inputHours = this.buildInputBox(0, null)
+    this.inputHours = buildInputBox(0, null, this.theme, this.schema)
 
     // Build Minutes input box
-    this.inputMinutes = this.buildInputBox(0, 59)
+    this.inputMinutes = buildInputBox(0, 59, this.theme, this.schema)
 
     // Add a lable for the inputHours
     this.lable = this.header = this.theme.getFormInputLabel(this.getTitle(), this.isRequired())
@@ -65,61 +69,7 @@ export class ffmHourMinuteEditor extends AbstractEditor {
 
     // Build a disable ckeck box
     this.disableCheckBox = this.theme.getCheckbox()
-  }
-
-  // used to build a input box with all Attribute needed
-  buildInputBox (min, max) {
-    const input = this.theme.getFormInputField('input')
-
-    // Set the input type to a number.
-    input.setAttribute('type', 'number')
-
-    // Set up the input box as a step type
-    if (!input.getAttribute('step')) {
-      input.setAttribute('step', '1')
-    }
-
-    // Set the minimum value for the input box from the schema
-    if (min === 'undefined' || min === null) {
-      if (typeof this.schema.minimum !== 'undefined') {
-        let { minimum } = this.schema
-
-        if (typeof this.schema.exclusiveMinimum !== 'undefined') {
-          minimum += 1
-        }
-
-        if (minimum > 0) {
-          input.setAttribute('min', minimum)
-        } else {
-          input.setAttribute('min', 0)
-        }
-      }
-    } else {
-      // if the minimum value is overridden set from the caller
-      input.setAttribute('min', min)
-    }
-
-    // Set the maximum value for the input box from the schema
-    if (max === 'undefined' || max === null) {
-      if (typeof this.schema.maximum !== 'undefined') {
-        let { maximum } = this.schema
-
-        if (typeof this.schema.exclusiveMaximum !== 'undefined') {
-          maximum -= 1
-        }
-
-        if (maximum > 0) {
-          input.setAttribute('max', Math.floor((maximum - 59) / 60))
-        } else {
-          input.setAttribute('max', 59)
-        }
-      }
-    } else {
-      // if the maximum value is overridden set from the caller
-      input.setAttribute('max', max)
-    }
-
-    return input
+    this.disableCheckBox.id = this.disableCheckBoxId.toString()
   }
 
   build () {
@@ -139,26 +89,28 @@ export class ffmHourMinuteEditor extends AbstractEditor {
 
     // create a table row for the control
     const tableRow = this.theme.getTableRow()
+
     // Add the cells to the row
     tableRow.appendChild(tableCellHours)
     tableRow.appendChild(tableCellMinutes)
 
     // Add an event handler to update the controls value when one of the controls value is changed
     this.SomeThingChangedHandler = (e) => {
-      if (typeof this.schema.ShowDisableCheckBox !== 'undefined' || this.schema.ShowDisableCheckBox === true) {
-        if (this.disableCheckBox.checked) {
-          this.inputHours.setAttribute('hidden', true)
-          this.inputMinutes.setAttribute('hidden', true)
-        } else {
-          this.inputHours.removeAttribute('hidden')
-          this.inputMinutes.removeAttribute('hidden')
-        }
+      var valueLocal = 0
+
+      // Check to see if the check box is being clicked on and get it value
+      // if the diable check box is checked get then use the disable value
+      if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() && e.target.checked) {
+        valueLocal = getDisabledValue(null, this.schema, this.disabledValue)
+      } else {
+        // get the to totalTime min Minutes from the hour and seconds box
+        const totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
+        const totalMinutes = isInteger(this.inputMinutes.value) ? parseInt(this.inputMinutes.value) : 0
+        const totalTime = (parseInt(totalhours) * 60) + parseInt(totalMinutes)
+        valueLocal = totalTime
       }
 
-      const totalhours = isInteger(this.inputHours.value) ? parseInt(this.inputHours.value) : 0
-      const totalMinutes = isInteger(this.inputMinutes.value) ? parseInt(this.inputMinutes.value) : 0
-      const totalTime = (parseInt(totalhours) * 60) + parseInt(totalMinutes)
-      this.setValue(totalTime)
+      this.setValue(valueLocal)
       this.onChange(true)
     }
 
@@ -192,40 +144,53 @@ export class ffmHourMinuteEditor extends AbstractEditor {
   // called by the SomeThingChangedHandler
   // every time the control is changed
   setValue (value, initial) {
-    // Check to see if the value is a number
-    value = isNumber(value.toString()) ? value : 0
+    if (checkIfDisabled(value, this.schema)) {
+      this.disableCheckBox.checked = true
+      this.inputHours.value = 0
+      this.inputMinutes.value = 0
 
-    // Check to see if the value is a int
-    value = isInteger(value.toString()) ? parseInt(value) : 0
+      this.inputHours.setAttribute('hidden', true)
+      this.inputMinutes.setAttribute('hidden', true)
 
-    // Check to see if the number is less then zero
-    if (value < 0) {
-      value = 0
-      this.value = 0
+      this.value = getDisabledValue(value, this.schema, this.disabledValue)
+      this.onChange(true)
+
+      return
     }
 
+    // Check to see if the value is a number
+    var valueLocal = isNumber(value.toString()) ? value : 0
+
+    this.disableCheckBox.checked = false
+    this.inputHours.removeAttribute('hidden')
+    this.inputMinutes.removeAttribute('hidden')
+
+    // Format the listbox
     // if the number is one hour or more do the math to separate the hours and minutes
     // else just move the value to the minutes
-    if (value >= 60) {
-      this.inputHours.value = parseInt(Math.floor(value / 60))
-      this.inputMinutes.value = parseInt(Math.floor(value % 60))
+    if (valueLocal >= 60) {
+      this.inputHours.value = parseInt(Math.floor(valueLocal / 60))
+      this.inputMinutes.value = parseInt(Math.floor(valueLocal % 60))
     } else {
       this.inputHours.value = 0
-      this.inputMinutes.value = value
+      this.inputMinutes.value = valueLocal
     }
 
-    if (typeof this.schema.ShowDisableCheckBox === 'undefined' || this.schema.ShowDisableCheckBox === true) {
-      if (this.disableCheckBox.checked) {
-        if (typeof this.schema.disabledValue === 'undefined') {
-          value = -1
-        } else {
-          value = isInteger(this.schema.disabledValue.toString()) ? parseInt(this.schema.disabledValue) : -1
-        }
-      }
+    valueLocal = Math.floor(valueLocal)
+
+    // Check to see if the number is less then -32767
+    if (valueLocal < 0 && !checkIfDisabled(valueLocal, this.schema)) {
+      valueLocal = 0
+      this.inputHours.value = 0
+      this.inputMinutes.value = 0
+    }
+
+    if (valueLocal > 32768) {
+      valueLocal = 32768
     }
 
     // update the global storge value
-    this.value = value
+    this.value = valueLocal
     this.onChange(true)
   }
 }
