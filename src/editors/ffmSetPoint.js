@@ -102,7 +102,7 @@ export class ffmSetPointEditor extends AbstractEditor {
       // Check to see if the check box is being clicked on and get it value
       // if the diable check box is checked get then use the disable value
       if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() && e.target.checked) {
-        valueLocal = getDisabledValue(null, this.schema, this.disabledValue)
+        valueLocal = getDisabledValue(null, this.schema, this.disabledValueDefault)
       } else {
         if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {
           const impliedDecimalPoints = this.schema.impliedDecimalPoints
@@ -154,7 +154,7 @@ export class ffmSetPointEditor extends AbstractEditor {
 
       this.input.setAttribute('hidden', true)
 
-      this.value = getDisabledValue(value, this.schema, this.disabledValue)
+      this.value = getDisabledValue(value, this.schema, this.disabledValueDefault)
       this.onChange(true)
 
       return
