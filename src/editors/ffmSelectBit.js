@@ -75,7 +75,7 @@ export class ffmSelectBitEditor extends AbstractEditor {
 
     this.container.appendChild(this.control)
 
-    this.SelectBitChangeHandler = (e) => {
+    this.SomeThingChangedHandler_ffmSelectBit = (e) => {
       const newValue = []
       for (i = 0; i < this.option_keys.length; i++) {
         if (this.select_options[this.option_keys[i]] && (this.select_options[this.option_keys[i]].selected || this.select_options[this.option_keys[i]].checked)) newValue.push(this.select_values[this.option_keys[i]])
@@ -85,7 +85,7 @@ export class ffmSelectBitEditor extends AbstractEditor {
       this.onChange(true)
     }
 
-    this.control.addEventListener('change', this.SelectBitChangeHandler, false)
+    this.control.addEventListener('change', this.SomeThingChangedHandler_ffmSelectBit, false)
 
     /* Any special formatting that needs to happen after the input is added to the dom */
     window.requestAnimationFrame(() => {

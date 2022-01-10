@@ -95,7 +95,7 @@ export class ffmHourMinuteEditor extends AbstractEditor {
     tableRow.appendChild(tableCellMinutes)
 
     // Add an event handler to update the controls value when one of the controls value is changed
-    this.SomeThingChangedHandler = (e) => {
+    this.SomeThingChangedHandler_ffmHoursMinute = (e) => {
       var valueLocal = 0
 
       // Check to see if the check box is being clicked on and get it value
@@ -115,7 +115,7 @@ export class ffmHourMinuteEditor extends AbstractEditor {
     }
 
     // add a change event handler to the table
-    this.table.addEventListener('change', this.SomeThingChangedHandler, false)
+    this.table.addEventListener('change', this.SomeThingChangedHandler_ffmHoursMinute, false)
 
     // add the row to the table
     this.table.appendChild(tableRow)
