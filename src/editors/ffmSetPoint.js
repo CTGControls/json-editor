@@ -55,7 +55,7 @@ export class ffmSetPointEditor extends AbstractEditor {
     super.preBuild()
 
     this.disabledValueDefault = -1
-    this.disableCheckBoxId = this.path + '.disable'
+    this.disableCheckBoxId = this.path + Math.random().toString().slice(2, 11) + '.disable'
 
     // Build input box
     this.input = buildInputBox(null, null, this.theme, this.schema)
@@ -101,7 +101,8 @@ export class ffmSetPointEditor extends AbstractEditor {
 
       // Check to see if the check box is being clicked on and get it value
       // if the diable check box is checked get then use the disable value
-      if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() && e.target.checked) {
+      // if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() || e.target.checked) {
+      if (e.target.checked) {
         valueLocal = getDisabledValue(null, this.schema, this.disabledValueDefault)
       } else {
         if (typeof this.schema.impliedDecimalPoints !== 'undefined' && isNumber(this.schema.impliedDecimalPoints.toString()) && this.schema.impliedDecimalPoints > 0) {

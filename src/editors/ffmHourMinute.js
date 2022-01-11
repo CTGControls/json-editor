@@ -44,7 +44,7 @@ export class ffmHourMinuteEditor extends AbstractEditor {
     super.preBuild()
 
     this.disabledValueDefault = -1
-    this.disableCheckBoxId = this.path + '.disable'
+    this.disableCheckBoxId = this.path + Math.random().toString().slice(2, 11) + '.disable'
 
     // Build Hours input box
     this.inputHours = buildInputBox(0, null, this.theme, this.schema)
@@ -100,7 +100,8 @@ export class ffmHourMinuteEditor extends AbstractEditor {
 
       // Check to see if the check box is being clicked on and get it value
       // if the diable check box is checked get then use the disable value
-      if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() && e.target.checked) {
+      // if (e.target.id.toString().toLowerCase() === this.disableCheckBoxId.toString().toLowerCase() || e.target.checked) {
+      if (e.target.checked) {
         valueLocal = getDisabledValue(null, this.schema, this.disabledValue)
       } else {
         // get the to totalTime min Minutes from the hour and seconds box
