@@ -11,7 +11,7 @@ import { buildInputBox, checkIfDisabled, getDisabledValue } from '../ffmUtilitie
 /// All parameters names are case sensitive
 /// </summary>
 /// <example>
-///   <code>
+///   <code> 
 ///   "loop2": {
 ///     "type": 'integer',
 ///     "format": 'ssiSetPoint',
