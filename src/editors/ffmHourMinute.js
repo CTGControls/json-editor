@@ -22,7 +22,7 @@ import { buildInputBox, checkIfDisabled, getDisabledValue } from '../ffmUtilitie
 ///     "disabledValue" : -1
 ///   }
 ///   </code>
-/// </example>
+/// </example> 
 /// <param name="type">Must be a type of integer (Case </param>
 /// <param name="format">Must be a type of SSI_HourMinuteToInt</param>
 /// <param name="title">Title of the control.</param>
